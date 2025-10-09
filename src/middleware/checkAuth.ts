@@ -25,8 +25,6 @@ export const checkAuth =
       const accessToken =
         accessTokenHeader?.split(" ")[1] || req.cookies.accessToken;
 
-        console.log(accessToken)
-
       if (!accessToken) {
         throw new AppError(httpStatus.FORBIDDEN, "No token received");
       }

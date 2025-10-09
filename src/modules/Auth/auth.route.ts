@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { AuthControllers } from "./auth.controller";
+import { checkAuth } from "../../middleware/checkAuth";
+import { ROLE } from "../users/user.interface";
 
 const router = Router();
 
@@ -21,6 +23,7 @@ router.post("/logout", AuthControllers.logout);
 // ==========================
 // 🔑 Optional: Reset password
 // ==========================
-// router.post("/reset-password", AuthControllers.resetPassword);
+router.post("/reset-password" ,checkAuth(...Object.values(ROLE)), AuthControllers.resetPassword)
+
 
 export const AuthRoutes = router;
