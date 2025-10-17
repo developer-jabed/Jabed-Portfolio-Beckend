@@ -8,6 +8,8 @@ const router = Router();
 router.post("/create", checkAuth(ROLE.ADMIN, ROLE.USER), BlogController.createBlog);
 router.patch("/update/:id", checkAuth(ROLE.ADMIN, ROLE.USER), BlogController.updateBlog);
 router.delete("/delete/:id", checkAuth(ROLE.ADMIN, ROLE.USER), BlogController.deleteBlog);
+// Get blogs for logged-in user
+router.get("/my-blogs", checkAuth(ROLE.ADMIN, ROLE.USER), BlogController.getMyBlogs);
 
 router.get("/all-blogs", BlogController.getAllBlogs);
 router.get("/:id", BlogController.getBlogById);

@@ -50,8 +50,8 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
 // Delete blog
 const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = Number((req.user as JwtPayload).userId);
-        const blogId = Number(req.params.id);
+        const userId = Number((req.user as JwtPayload).userId); // Logged-in user ID
+        const blogId = Number(req.params.id); // Blog ID from route
 
         await BlogService.deleteBlog(blogId, userId);
 
@@ -99,10 +99,29 @@ const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+// Get blogs for logged-in user
+const getMyBlogs = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = Number((req.user as JwtPayload).userId);
+        const blogs = await BlogService.getBlogsByUser(userId);
+
+        sendResponse(res, {
+            success: true,
+            statuscode: httpStatus.OK,
+            message: "Your blogs fetched successfully",
+            data: blogs,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
 export const BlogController = {
     createBlog,
     updateBlog,
     deleteBlog,
     getAllBlogs,
     getBlogById,
+    getMyBlogs,
 };

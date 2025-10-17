@@ -14,7 +14,7 @@ const createBlog = async (payload: any, authorId: number) => {
     console.log(payload)
 
     if (!title || !content) {
-        console.log("Payload console:",payload)
+        console.log("Payload console:", payload)
         throw new AppError(httpStatus.BAD_REQUEST, "Missing required blog fields");
     }
 
@@ -34,6 +34,16 @@ const createBlog = async (payload: any, authorId: number) => {
 
     return blog;
 };
+// Get blogs by user ID
+const getBlogsByUser = async (userId: number) => {
+    const blogs = await prisma.blog.findMany({
+        where: { authorId: userId },
+        orderBy: { createdAt: "desc" },
+        include: { author: { select: { id: true, name: true, email: true } } },
+    });
+    return blogs;
+};
+
 
 // Update a blog by ID
 const updateBlog = async (blogId: number, payload: any, authorId: number) => {
@@ -66,14 +76,18 @@ const updateBlog = async (blogId: number, payload: any, authorId: number) => {
 
 // Delete a blog by ID
 const deleteBlog = async (blogId: number, authorId: number) => {
-    const existingBlog = await prisma.blog.findUnique({ where: { id: blogId } });
+    const existingBlog = await prisma.blog.findUnique({
+        where: { id: blogId },
+    });
+
     if (!existingBlog) {
         throw new AppError(httpStatus.NOT_FOUND, "Blog not found");
     }
 
-    if (existingBlog.authorId !== authorId) {
-        throw new AppError(httpStatus.FORBIDDEN, "You cannot delete this blog");
-    }
+    // Optional: check if the logged-in user is the author
+    //   if (existingBlog.authorId !== authorId) {
+    //     throw new AppError(httpStatus.FORBIDDEN, "You are not allowed to delete this blog");
+    //   }
 
     await prisma.blog.delete({ where: { id: blogId } });
     return true;
@@ -105,4 +119,5 @@ export const BlogService = {
     deleteBlog,
     getAllBlogs,
     getBlogById,
+    getBlogsByUser,
 };

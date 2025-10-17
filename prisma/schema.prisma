@@ -21,6 +21,7 @@ model User {
   updatedAt   DateTime  @updatedAt
   blogs       Blog[]
   projects    Project[]
+  messages    Message[] // 👈 all messages sent by this user
 }
 
 enum Role {
@@ -45,7 +46,7 @@ model Blog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Project {
@@ -60,5 +61,23 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   ownerId     Int
-  owner       User     @relation(fields: [ownerId], references: [id])
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String
+  subject     String?
+  content     String
+  status      MessageStatus @default(NEW)
+  createdAt   DateTime     @default(now())
+  senderId    Int?         // optional if guests can message
+  sender      User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
+}
+
+enum MessageStatus {
+  NEW
+  READ
+  REPLIED
 }
