@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { router } from "./routes/router";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import notFound from "./middleware/NotFound";
+import { envVars } from "./config/env";
 
 const app = express();
 
@@ -19,8 +20,8 @@ app.use(cookieParser());
 // ✅ CORS setup (only once)
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend URL
-    credentials: true,               // allow cookies
+    origin: envVars.FRONTEND_URL || "http://localhost:3000" , 
+    credentials: true,
   })
 );
 

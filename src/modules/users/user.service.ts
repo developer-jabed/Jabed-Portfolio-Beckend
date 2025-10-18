@@ -20,7 +20,7 @@ const createUser = async (payload: any) => {
       name: payload.name,
       picture: payload.picture,
       phone: payload.phone,
-      role: payload.role || "USER",
+      role: payload.role || "User",
       status: payload.status || "ACTIVE",
     },
   });

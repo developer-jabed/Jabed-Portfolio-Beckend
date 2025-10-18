@@ -6,3 +6,4 @@ build
 .logger
 /src/generated/prisma
 .env
+.vercel
